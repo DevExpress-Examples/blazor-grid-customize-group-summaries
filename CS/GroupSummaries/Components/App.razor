@@ -1,0 +1,74 @@
+﻿@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@inject IFileVersionProvider FileVersionProvider
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/"/>
+    <link href=@AppendVersion("_content/DevExpress.Blazor.Themes/blazing-berry.bs5.min.css") rel="stylesheet"/>
+
+    @DxResourceManager.RegisterScripts()
+    <link href=@AppendVersion("css/site.css") rel="stylesheet"/>
+    <link href=@AppendVersion("GroupSummaries.styles.css") rel="stylesheet"/>
+    <HeadOutlet/>
+</head>
+<body>
+    <Routes @rendermode="InteractiveServer"></Routes>
+    <script src="_framework/blazor.web.js"></script>
+    <script>
+        const resizeObserver = new ResizeObserver((_) => {
+            AdjustSummaryTable();
+        });
+        
+        function InitializeSummaryTable(gridSelector) {
+            AdjustSummaryTable();
+            var grid = document.querySelector(gridSelector);
+            resizeObserver.observe(grid);
+        }
+        
+        function AdjustSummaryTable() {
+            RemoveCustomStyleElement();
+
+            var styleRules = [ ];
+            var headerCells = document.querySelectorAll(".dxbl-grid-header-row > th:not([class*=dxbl-grid-empty-cell])");
+            for(var i = 0; i < headerCells.length; i++)
+                styleRules.push(CreateStyleRule(headerCells[i], i));
+            AppendStyleToHeader(styleRules);
+        }
+
+        function CreateStyleRule(headerCell, headerIndex) {
+            var width = headerCell.offsetWidth;
+            var cellRule = ".summaryCell_" + headerIndex;
+            return cellRule + "{ width:" + width + "px; }";
+        }
+
+        var customStyleElement = null;
+        
+        function AppendStyleToHeader(styleRules) {
+            var container = document.createElement("DIV");
+            container.innerHTML = "<style>" + styleRules.join("") + "</style>";
+
+            var head = document.getElementsByTagName("HEAD")[0];
+            customStyleElement = container.getElementsByTagName("STYLE")[0];
+
+            head.appendChild(customStyleElement);
+        }
+        
+        function RemoveCustomStyleElement() {
+            if (customStyleElement) {
+                if (customStyleElement.parentNode) {
+                    customStyleElement.parentNode.removeChild(customStyleElement);
+                }
+                customStyleElement = null;
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+@code{
+    private string AppendVersion(string path) => FileVersionProvider.AddFileVersionToPath("/", path);
+}

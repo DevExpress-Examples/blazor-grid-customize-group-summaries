@@ -1,0 +1,63 @@
+﻿@page "/"
+@using GroupSummaries.Models
+@using GroupSummaries.Models.Northwind
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<NorthwindContext> NorthwindContextFactory
+@inject StateService stateService
+@inject IJSRuntime JS
+
+<style>
+    td:has(> table.summaryTable) {
+        padding:  0 !important;
+    }
+</style>
+
+<DxGrid Data="@Products" CssClass="myGrid"
+        KeyFieldName="OrderID" ShowGroupPanel="true" LayoutAutoSaving="OnLayoutAutoSaving"
+        GroupFooterDisplayMode="GridGroupFooterDisplayMode.Never" ColumnResizeMode="GridColumnResizeMode.ColumnsContainer">
+    <Columns>
+        <DxGridDataColumn FieldName="ProductId"/>
+        <DxGridDataColumn FieldName="ProductName"/>
+        <DxGridDataColumn FieldName="CategoryId" Caption="Category" GroupIndex="1">
+            <EditSettings>
+                <DxComboBoxSettings Data="Categories" ValueFieldName="CategoryId" TextFieldName="CategoryName"/>
+            </EditSettings>
+        </DxGridDataColumn>
+        <DxGridDataColumn FieldName="UnitPrice"/>
+        <DxGridDataColumn FieldName="UnitsInStock"/>
+        <DxGridDataColumn FieldName="Discontinued" GroupIndex="0"/>
+    </Columns>
+    <GroupSummary>
+        <DxGridSummaryItem
+            SummaryType="GridSummaryItemType.Avg"
+            FieldName="UnitPrice" Visible="false"
+            ValueDisplayFormat="n2"/>
+        <DxGridSummaryItem
+            SummaryType="GridSummaryItemType.Sum"
+            FieldName="UnitsInStock" Visible="false"
+            ValueDisplayFormat="n2"/>
+    </GroupSummary>
+    <DataColumnGroupRowTemplate>
+        <GroupRowContent Context="context"></GroupRowContent>
+    </DataColumnGroupRowTemplate>
+</DxGrid>
+
+@code {
+    NorthwindContext Northwind { get; set; }
+    List<Product> Products { get; set; }
+    List<Category> Categories { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        Northwind = await NorthwindContextFactory.CreateDbContextAsync();
+        Products = await Northwind.Products.ToListAsync();
+        Categories = await Northwind.Categories.ToListAsync();
+    }
+
+    async Task OnLayoutAutoSaving(GridPersistentLayoutEventArgs e) {
+        stateService.GridLayoutChanged = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        await JS.InvokeVoidAsync("InitializeSummaryTable", ".myGrid");
+    }
+}
