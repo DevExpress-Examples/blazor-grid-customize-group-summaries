@@ -12,52 +12,59 @@
     }
 </style>
 
-<DxGrid Data="@Products" CssClass="myGrid"
-        KeyFieldName="OrderID" ShowGroupPanel="true" LayoutAutoSaving="OnLayoutAutoSaving"
-        GroupFooterDisplayMode="GridGroupFooterDisplayMode.Never" ColumnResizeMode="GridColumnResizeMode.ColumnsContainer">
-    <Columns>
-        <DxGridDataColumn FieldName="ProductId"/>
-        <DxGridDataColumn FieldName="ProductName"/>
-        <DxGridDataColumn FieldName="CategoryId" Caption="Category" GroupIndex="1">
-            <EditSettings>
-                <DxComboBoxSettings Data="Categories" ValueFieldName="CategoryId" TextFieldName="CategoryName"/>
-            </EditSettings>
-        </DxGridDataColumn>
-        <DxGridDataColumn FieldName="UnitPrice"/>
-        <DxGridDataColumn FieldName="UnitsInStock"/>
-        <DxGridDataColumn FieldName="Discontinued" GroupIndex="0"/>
-    </Columns>
-    <GroupSummary>
-        <DxGridSummaryItem
-            SummaryType="GridSummaryItemType.Avg"
-            FieldName="UnitPrice" Visible="false"
-            ValueDisplayFormat="n2"/>
-        <DxGridSummaryItem
-            SummaryType="GridSummaryItemType.Sum"
-            FieldName="UnitsInStock" Visible="false"
-            ValueDisplayFormat="n2"/>
-    </GroupSummary>
-    <DataColumnGroupRowTemplate>
-        <GroupRowContent Context="context"></GroupRowContent>
-    </DataColumnGroupRowTemplate>
-</DxGrid>
+<PageTitle>Welcome</PageTitle>
+
+<div class="main-content">
+    <DxGrid Data="@Products" CssClass="myGrid"
+            KeyFieldName="OrderID" ShowGroupPanel="true" LayoutAutoSaving="OnLayoutAutoSaving"
+            GroupFooterDisplayMode="GridGroupFooterDisplayMode.Never" ColumnResizeMode="GridColumnResizeMode.ColumnsContainer">
+        <Columns>
+            <DxGridDataColumn FieldName="ProductId" />
+            <DxGridDataColumn FieldName="ProductName" />
+            <DxGridDataColumn FieldName="CategoryId" Caption="Category" GroupIndex="1">
+                <EditSettings>
+                    <DxComboBoxSettings Data="Categories" ValueFieldName="CategoryId" TextFieldName="CategoryName" />
+                </EditSettings>
+            </DxGridDataColumn>
+            <DxGridDataColumn FieldName="UnitPrice" />
+            <DxGridDataColumn FieldName="UnitsInStock" />
+            <DxGridDataColumn FieldName="Discontinued" GroupIndex="0" />
+        </Columns>
+        <GroupSummary>
+            <DxGridSummaryItem SummaryType="GridSummaryItemType.Avg"
+                               FieldName="UnitPrice" Visible="false"
+                               ValueDisplayFormat="n2" />
+            <DxGridSummaryItem SummaryType="GridSummaryItemType.Sum"
+                               FieldName="UnitsInStock" Visible="false"
+                               ValueDisplayFormat="n2" />
+        </GroupSummary>
+        <DataColumnGroupRowTemplate>
+            <GroupRowContent Context="context"></GroupRowContent>
+        </DataColumnGroupRowTemplate>
+    </DxGrid>
+</div>
 
 @code {
+    [SupplyParameterFromQuery(Name = UrlGenerator.ToggleSidebarName)]
+    public bool ToggledSidebar { get; set; }
     NorthwindContext Northwind { get; set; }
     List<Product> Products { get; set; }
     List<Category> Categories { get; set; }
 
-    protected override async Task OnInitializedAsync() {
+    protected override async Task OnInitializedAsync()
+    {
         Northwind = await NorthwindContextFactory.CreateDbContextAsync();
         Products = await Northwind.Products.ToListAsync();
         Categories = await Northwind.Categories.ToListAsync();
     }
 
-    async Task OnLayoutAutoSaving(GridPersistentLayoutEventArgs e) {
+    async Task OnLayoutAutoSaving(GridPersistentLayoutEventArgs e)
+    {
         stateService.GridLayoutChanged = true;
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
         await JS.InvokeVoidAsync("InitializeSummaryTable", ".myGrid");
     }
 }
