@@ -30,6 +30,7 @@ The grid's [LayoutAutoSaving](https://docs.devexpress.com/Blazor/DevExpress.Blaz
 ## Documentation
 
 - [DxGrid Component](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid)
+- [DxGrid.GroupSummary Property](https://github.com/DevExpress-Examples/blazor-DxGrid-Detail-Information-DxFormLayout)
 - [DxGrid.DataColumnGroupRowTemplate Property](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.DataColumnGroupRowTemplate)
 - [GridDataColumnGroupRowTemplateContext Class](https://docs.devexpress.com/Blazor/DevExpress.Blazor.GridDataColumnGroupRowTemplateContext)
 - [DxGrid.LayoutAutoSaving Event](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.LayoutAutoSaving)
