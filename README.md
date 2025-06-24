@@ -4,22 +4,21 @@
 [![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
 [![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
 <!-- default badges end -->
-# Blazor Grid - Customize Group Summaries
+# DevExpress Blazor Grid - Customize Group Summaries
 
-The [DevExpress Blazor Grid](https://docs.devexpress.com/Blazor/403143/components/grid) component can calculate [group summary](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.GroupSummary) values across all records in a group. You can use the [DataColumnGroupRowTemplate](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.DataColumnGroupRowTemplate) property to specify custom content and appearance for summary rows.
+The [DevExpress Blazor Grid](https://docs.devexpress.com/Blazor/403143/components/grid) can calculate [group summary](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.GroupSummary) values across all records in a group. You can use the [DataColumnGroupRowTemplate](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.DataColumnGroupRowTemplate) property to specify custom content and appearance for summary rows.
 
 ![Custom Group Summaries](images/blazor-grid-summaries.png)
 
 ## Implementation Details
 
-The [GroupRowContent.razor](CS/GroupSummaries/Components/GroupRowContent.razor) custom Razor component defines a template for both group row content and group summaries aligned with their respective columns. Its internal structure is built with a standard HTML table layout.
+The [GroupRowContent.razor](CS/GroupSummaries/Components/GroupRowContent.razor) custom Razor component defines the template used for both group row content and group summaries aligned with their respective columns. Its internal structure is built with a standard HTML table layout.
 
-This template is included in the DxGrid component through the [DataColumnGroupRowTemplate](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.DataColumnGroupRowTemplate) property. The row data is passed through the [Context](https://docs.devexpress.com/Blazor/DevExpress.Blazor.GridDataColumnGroupRowTemplateContext) property to the `GroupRowContent` custom component. The row's context also allows to access the Grid's instance. It is used to render the required column structure within the HTML table element, the group row, and group summary values. Visual styles for these elements are defined in the accompanying [GroupRowContent.razor.css](CS/GroupSummaries/Components/GroupRowContent.razor.css) stylesheet.
+This template is included with our Blazor Grid (DxGrid) component through the [DataColumnGroupRowTemplate](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.DataColumnGroupRowTemplate) property. Row data is passed through the [Context](https://docs.devexpress.com/Blazor/DevExpress.Blazor.GridDataColumnGroupRowTemplateContext) property to the `GroupRowContent` custom component. Row context allows you to access a Grid's instance. We use it to render the required column structure within the HTML table element, the group row, and group summary values. Visual styles for these elements are defined in the accompanying [GroupRowContent.razor.css](CS/GroupSummaries/Components/GroupRowContent.razor.css) stylesheet.
 
-The `InitializeSummaryTable` JavaScript function synchronizes the column widths of the template with the grid's columns. It also attaches a [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) to the grid, which automatically updates the table's column widths whenever the grid is resized.
-JavaScript functions are defined in the [root component](CS/GroupSummaries/Components/App.razor). They are invoked from the page's `OnAfterRender` lifecycle event using Blazor [JS Interop](https://learn.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/call-javascript-from-dotnet).
+The `InitializeSummaryTable` JavaScript function synchronizes template column width with individual Grid columns. It also attaches a [ResizeObserver](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) to the Grid to automatically update table column width whenever the Grid is resized. JavaScript functions are defined in the [root component](CS/GroupSummaries/Components/App.razor). They are invoked from the page's `OnAfterRender` lifecycle event using Blazor [JS Interop](https://learn.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/call-javascript-from-dotnet).
 
-The grid's [LayoutAutoSaving](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.LayoutAutoSaving) event is used to handle Grid layout changes. When the event fires, the custom component invokes the `AdjustSummaryTable` JavaScript function to ensure the group row display is updated correctly.
+Our Blazor Grid’s [LayoutAutoSaving](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxGrid.LayoutAutoSaving) event is used to handle Grid layout changes. When the event fires, the custom component invokes the `AdjustSummaryTable` JavaScript function to ensure group row display is updated correctly.
 
 ## Files to Review
 
